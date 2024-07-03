@@ -1,11 +1,16 @@
 import {Router} from 'express'
+import { 
+    login,
+    registro,
+    confirmEmail,
+} from '../controllers/administrador_controller.js'
 const router = Router()
 
-router.post('/login',(req,res)=>res.send("login"))
+router.post('/login',login)
 
-router.post('/registro',(req,res)=>res.send("registro"))
+router.post('/registro',registro)
 
-router.get('/confirmar/:token',(req,res)=>res.send("confirmar email"))
+router.get('/confirmar/:token',confirmEmail)
 
 router.get('/recuperar-password',(req,res)=>res.send("enviar mail"))
 

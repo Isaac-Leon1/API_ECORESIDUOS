@@ -1,11 +1,17 @@
 import {Router} from 'express'
 const router = Router()
+import { 
+    listarRutas,
+    detalleRuta,
+    registrarRuta,
+    actualizarRuta,
+    eliminarRuta 
+} from '../controllers/rutas_controller.js'
 
-
-router.get('/rutas',(req,res)=>res.send("Listar rutas de recoleccion"))
-router.get('/rutas/:id',(req,res)=>res.send("Obtener una ruta de recoleccion por ID"))
-router.post('/rutas/registro',(req,res)=>res.send("Registrar ruta de recoleccion"))
-router.put('/rutas/actualizar/:id',(req,res)=>res.send("Actualizar ruta de recoleccion"))
-router.delete('/rutas/eliminar/:id',(req,res)=>res.send("Eliminar ruta de recoleccion"))
+router.get('/rutas',listarRutas)
+router.get('/rutas/:id',detalleRuta)
+router.post('/rutas/registro',registrarRuta)
+router.put('/rutas/actualizar/:id',actualizarRuta)
+router.delete('/rutas/eliminar/:id',eliminarRuta)
 
 export default router

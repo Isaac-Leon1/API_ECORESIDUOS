@@ -1,15 +1,14 @@
 import {Schema, model} from 'mongoose'
-import bcrypt from "bcryptjs"
 
 const rutasSchema = new Schema({
     nombre:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
     empiezaEn:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
     finalizaEn:{
@@ -18,21 +17,19 @@ const rutasSchema = new Schema({
         default:null
     },
     dias:{
-        type:Number,
-        trim:true,
+        type: Array,
         default:null
     },
     horario:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
-				unique:true
     },
     tipoResiduos:{
         type:String,
-        require:true
+        required:true
     },
-    status:{
+    estado:{
         type:Boolean,
         default:true
     }

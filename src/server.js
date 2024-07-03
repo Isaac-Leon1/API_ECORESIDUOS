@@ -3,6 +3,9 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors';
 
+import routerAdministradores from './routers/administrador_routes.js'
+import routerRutas from './routers/rutas_routes.js'
+
 // Inicializaciones
 const app = express()
 dotenv.config()
@@ -22,6 +25,12 @@ app.use(express.json())
 app.get('/',(req,res)=>{
     res.send("Server on")
 })
+app.use('/api',routerRutas)
+app.use('/api',routerAdministradores)
+
+// Manejo de una ruta que no sea encontrada
+app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))
+
 
 // Exportar la instancia de express por medio de app
 export default  app

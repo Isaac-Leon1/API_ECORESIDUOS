@@ -35,7 +35,6 @@ const eliminarRuta = async (req,res)=>{
     await Rutas.findByIdAndUpdate(req.params.id,{estado:false})
     res.status(200).json({msg:"Ruta eliminada correctamente"})
 }
-
 export {
     listarRutas,
     detalleRuta,

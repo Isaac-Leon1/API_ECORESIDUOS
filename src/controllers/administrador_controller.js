@@ -1,8 +1,6 @@
-import mongoose from 'mongoose';
 import Administrador from '../models/Administrador.js';
-import bcrypt from 'bcryptjs';
 import generarToken from '../helpers/JWT.js';
-import { sendMailToUser } from '../config/nodemailer.js';
+import { sendMailToAdmin } from '../config/nodemailer.js';
 
 const login = async (req,res)=>{
     // Actividad 1 (Request): Obtener los valores de email y password del body
@@ -24,13 +22,29 @@ const login = async (req,res)=>{
     
     // Actividad 3 (Base de datos)
     //? Generar token
-    const token = generarToken(administradorBDD._id)
+    const token = generarToken(administradorBDD._id, "administrador")
     const {_id,nombre,apellido,direccion,telefono,email:emailBDD} = administradorBDD;
 
     // Actividad 4 (Respuesta)
     res.status(200).json({_id,token,nombre,apellido,direccion,telefono,email:emailBDD})
 }
 const perfil=(req,res)=>{
+    const {
+        nombre,
+        apellido,
+        direccion,
+        telefono,
+        email
+    } = req.admin
+    res.status(200).json(
+        {
+            nombre,
+            apellido,
+            direccion,
+            telefono,
+            email
+        }
+    )
 }
 const registro = async (req,res)=>{
     // Actividad 1 (Request)
@@ -56,7 +70,7 @@ const registro = async (req,res)=>{
     administrador.password = await administrador.encrypPassword(password)
     const token = administrador.crearToken()
     await administrador.save()
-    sendMailToUser(email,token)
+    sendMailToAdmin(email,token)
     res.status(200).json({res:'Registro exitoso, verifica tu email para confirmar tu cuenta'})
 }
 const confirmEmail = async (req,res)=>{

@@ -14,7 +14,7 @@ let transporter = nodemailer.createTransport({
 });
 
 // Función para enviar correo al usuario
-const sendMailToUser = (userMail, token) => {
+const sendMailToAdmin = (userMail, token) => {
   // Configuración del correo
   let mailOptions = {
     from: process.env.USER_MAILTRAP, // Dirección del remitente
@@ -56,4 +56,21 @@ const sendMailToRecoveryPassword = async (userMail, token) => {
     console.log("Mensaje enviado satisfactoriamente: %s", info.messageId);
 }
 
-export { sendMailToUser, sendMailToRecoveryPassword };
+// Funcion para enviar un correo al ciudadano
+const sendMailToPerson = async (userMail, token) => {
+  let info = await transporter.sendMail({
+    from: process.env.USER_MAILTRAP,
+    to: userMail,
+    subject: "Correo de verificacion de cuenta para Ciudadanos",
+    html: `
+    <h1>Sistema de gestion de residuos</h1>
+    <hr>
+    Click <a href=${process.env.URL_BACKEND}ciudadano/verify/${token}>aqui</a> para confirmar tu cuenta.
+    <hr>
+    <footer>Residuos</footer>
+    `,
+  });
+  console.log("Mensaje enviado satisfactoriamente: %s", info.messageId);
+}
+
+export { sendMailToAdmin, sendMailToRecoveryPassword, sendMailToPerson };

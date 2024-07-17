@@ -11,11 +11,12 @@ import {
     nuevoPassword
 } from '../controllers/administrador_controller.js'
 import verificarAutenticacion from '../middlewares/auth.js'
+import { validacionAdministrador } from '../middlewares/validacionAdministrador.js'
 
 const router = Router()
 
 router.post('/login',login)
-router.post('/registro',registro)
+router.post('/registro',validacionAdministrador,registro)
 router.get('/confirmar/:token',confirmEmail)
 router.get('/recuperar-password',recuperarPassword)
 router.get('/recuperar-password/:token',comprobarTokenPasword)

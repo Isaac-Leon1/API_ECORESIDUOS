@@ -2,6 +2,7 @@ import Administrador from '../models/Administrador.js';
 import moongose from 'mongoose';
 import generarToken from '../helpers/JWT.js';
 import { sendMailToAdmin, sendMailToRecoveryPassword } from '../config/nodemailer.js';
+import Reportes from '../models/Reportes.js';
 
 const login = async (req,res)=>{
     // Actividad 1 (Request): Obtener los valores de email y password del body
@@ -213,6 +214,11 @@ const nuevoPassword = async (req,res)=>{
     res.status(200).json({msg:'Contraseña actualizada, ya puedes iniciar sesión'})
 }
 
+const listarReportes = async (req,res) => {
+    const reportes = await Reportes.find({state:true}).where('rutas').select("-createdAt -updatedAt -__v")
+    res.status(200).json(reportes)
+}
+
 export {
     login,
     perfil,
@@ -222,5 +228,6 @@ export {
     actualizarPassword,
 	recuperarPassword,
     comprobarTokenPasword,
-	nuevoPassword
+	nuevoPassword,
+    listarReportes
 }

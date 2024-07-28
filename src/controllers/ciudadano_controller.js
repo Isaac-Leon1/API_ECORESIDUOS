@@ -89,10 +89,85 @@ const reportarIncidente = async (req,res)=>{
     await reporte.save()
     res.status(200).json({msg:"Reporte creado exitosamente"})
 }
+const recuperarPassword = async (req,res)=>{
+    // Actividad 1 (Request)
+    const {email} = req.body
+    // Actividad 2 (Validaciones)
+    
+    //? Validar si los campos están vacíos
+    if (Object.values(req.body).includes('')){
+        return res.status(400).json({error:'Lo sentimos pero faltan datos'})
+    }
+
+    //? Validar si el email existe
+    const ciudadanoBDD = await Usuarios.findOne({email})
+    if (!ciudadanoBDD){
+        return res.status(404).json({error:'Lo sentimos, el email no existe'})
+    }
+    // Actividad 3 (Base de Datos)
+    const token = ciudadanoBDD.crearToken()
+    ciudadanoBDD.token = token
+    await sendMailToRecoveryPassword(email,token)
+    await ciudadanoBDD.save()
+    // Actividad 4 (Respuesta)
+    res.status(200).json({msg:'Correo enviado, verifica tu email'})
+}
+const comprobarTokenPasword = async (req,res)=>{
+    // Actividad 1 (Request) .../confirmar/
+    const token = req.params?.token
+    // Actividad 2 (Validaciones)
+    //? Validar si el token existe
+    if (!token){
+        return res.status(400).json({error:'Lo sentimos, no se puede validar el token'})
+    }
+    //? Validar si el token es correcto
+    const ciudadanoBDD = await Usuarios.findOne({token})
+    if (!ciudadanoBDD){
+        return res.status(404).json({error:'Lo sentimos, el token no existe'})
+    }
+    // Actividad 3 (Base de Datos)
+    await ciudadanoBDD.save()
+    // Actividad 4 (Respuesta)
+    res.status(200).json({msg:'Token confirmado, puedes cambiar tu password'})
+}
+const nuevoPassword = async (req,res)=>{
+    // Actividad 1 (Request)
+    const {
+        password,
+        confirmpassword
+    } = req.body
+    // Actividad 2 (Validaciones)
+    //? Validar si los campos están vacíos
+    if (Object.values(req.body).includes('')){
+        return res.status(400).json({error:'Lo sentimos pero faltan datos'})
+    }
+    //? Validar si las contraseñas coinciden
+    if (password !== confirmpassword){
+        return res.status(400).json({error:'Lo sentimos, las contraseñas no coinciden'})
+    }
+    //? Validar si la contraseña es la misma a la almacenada en la base de datos
+    const ciudadanoBDD = await Usuarios.findOne({token:req.params.token})
+    if (!ciudadanoBDD){
+        return res.status(404).json({error:'Lo sentimos, el token no existe'})
+    }
+    if (await ciudadanoBDD.matchPassword(password)){
+        return res.status(400).json({error:'Lo sentimos, la contraseña es la misma'})
+    }
+    // Actividad 3 (Base de Datos)
+    ciudadanoBDD.token = null
+    ciudadanoBDD.password = await ciudadanoBDD.encrypPassword(password)
+    await ciudadanoBDD.save()
+    // Actividad 4 (Respuesta)
+    res.status(200).json({msg:'Contraseña actualizada, ya puedes iniciar sesión'})
+}
+
 
 export {
     registro,
     login,
     verificarToken,
-    reportarIncidente
+    reportarIncidente,
+    recuperarPassword,
+    comprobarTokenPasword,
+    nuevoPassword
 }
